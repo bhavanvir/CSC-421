@@ -1,5 +1,4 @@
 # CSC-421
-WINTER 2023
 
 ## Course Overview
 In this course, students will be introduced to the basics of artificial intelligence. The course follows closely the popular Artificial Intelligence: A Modern Approach book by Peter Norvig and Stuart Russell. AIMA book website. The students work on a variety of assignments that have mathematical, algorithmic, and programming components building various small scale systems that illustrate fundamental ideas in AI. 

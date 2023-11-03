@@ -702,8 +702,7 @@ KB.tell(expr('S ==> T'))
 # Fill in the code so that s4 is set to the result of the theorem proving
 # s4 =
 s3 = KB.ask_if_true(expr('~P ==> T'))
-s4 = KB.ask_if_true(expr('~P ==> T'))
-
+s4 = pl_resolution(KB, expr('~P ==> T'))
 
 
 print("\nDoes KB entail ~P => T?")

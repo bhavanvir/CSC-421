@@ -922,38 +922,4 @@ def vars_elimination(x, s):
         return s.get(x, x)
     return Expr(x.op, *[vars_elimination(arg, s) for arg in x.args])
 
-
-# Your code for defining the family relationships and the Simpson family
-# goes here
-
-clauses = []
-clauses.append(expr('Parent(Homer, Lisa)'))
-clauses.append(expr('Parent(Homer, Bart)'))
-clauses.append(expr('Parent(Homer, Maggie)'))
-clauses.append(expr('Parent(Homer, x) ==> Parent(Marge, x)'))
-clauses.append(expr('Parent(x,y) ==> Child(y, x)'))
-clauses.append(expr('Parent(x,y) & Parent(x,z) ==> Sibling(y, z)'))
-
-kb = FolKB(clauses)
-
-homer_children = list(fol_fc_ask(kb, expr("Child(x,Homer)")))
-parents_of_bart = list(fol_fc_ask(kb, expr("Parent(x,Bart)")))
-siblings_lisa_homer = bool(len(list(fol_fc_ask(kb,expr("Sibling(Lisa,Homer)")))))
-siblings_lisa_bart  = bool(len(list(fol_fc_ask(kb,expr("Sibling(Lisa,Bart)")))))
-siblings_bart_bart = bool(len(list(fol_fc_ask(kb,expr("Sibling(Bart,Bart)")))))
-
-
-print("Children of Homer", homer_children)
-print("Parents of Bart", parents_of_bart)
-print("Are Lisa and Homer siblings", siblings_lisa_homer)
-print("Are Lisa and Bart siblings", siblings_lisa_bart)
-print("Are Bart and Bart siblings", siblings_bart_bart)
-
-
-## Correct output
-
-# Children of Homer [{x: Lisa}, {x: Maggie}, {x: Bart}]
-# Parents of Bart [{x: Homer}, {x: Marge}]
-# Are Lisa and Homer siblings False
-# Are Lisa and Bart siblings True
-# Are Bart and Bart siblings True
+# Your code goes here for the Legoworld domain

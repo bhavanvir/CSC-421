@@ -1,0 +1,44 @@
+% Source code in Prolog for the kinship domain of the Simpsons family
+:- use_module(library(lists)).
+parent(homer, bart).
+parent(homer, lisa).
+parent(homer, maggie).
+parent(marge, bart).
+parent(marge, lisa).
+parent(marge, maggie).
+
+child(bart, homer).
+child(lisa, homer).
+child(maggie, homer).
+child(bart, marge).
+child(lisa, marge).
+child(maggie, marge).
+
+siblings(bart, lisa).
+siblings(bart, maggie).
+siblings(lisa, bart).
+siblings(lisa, maggie).
+siblings(maggie, bart).
+siblings(maggie, lisa).
+
+children(Parent, Children) :-
+    setof(Child, child(Child, Parent), Children).
+
+parents(Child, Parents) :-
+	setof(Parent, parent(Parent, Child), Parents).
+
+% Who are the children of Homer?
+% input: children(homer, Children).
+% output: Children = [bart,lisa,maggie]
+
+% Who are the parents of Bart?
+% input: parents(bart, Parents).
+% output: Parents = [homer,marge]
+
+% Are Lisa and Homer siblings?
+% input: siblings(lisa, homer).
+% output: false
+
+% Are Lisa and Bart siblings?
+% input: siblings(lisa, bart).
+% output: true

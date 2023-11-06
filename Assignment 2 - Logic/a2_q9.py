@@ -923,3 +923,95 @@ def vars_elimination(x, s):
     return Expr(x.op, *[vars_elimination(arg, s) for arg in x.args])
 
 # Your code goes here for the Legoworld domain
+A, B, C, D, E, F, G, H, I, J = symbols('A, B, C, D, E, F, G, H, I, J')
+
+clauses = []
+clauses.append(expr('OnPlate(A)'))
+clauses.append(expr('OnPlate(D)'))
+clauses.append(expr('OnPlate(F)'))
+clauses.append(expr('OnPlate(J)'))
+
+clauses.append(expr('On(C, D)'))
+clauses.append(expr('On(B, C)'))
+clauses.append(expr('On(E, F)'))
+clauses.append(expr('On(I, J)'))
+clauses.append(expr('On(H, I)'))
+clauses.append(expr('On(G, H)'))
+
+clauses.append(expr('AtLeft(A, D)'))
+clauses.append(expr('AtLeft(D, F)'))
+clauses.append(expr('AtLeft(F, J)'))
+
+clauses.append(expr('Color(A, Red)'))
+clauses.append(expr('Color(D, Grey)'))
+clauses.append(expr('Color(C, Brown)'))
+clauses.append(expr('Color(B, White)'))
+clauses.append(expr('Color(F, Red)'))
+clauses.append(expr('Color(E, Brown)'))
+clauses.append(expr('Color(J, Yellow)'))
+clauses.append(expr('Color(I, Blue)'))
+clauses.append(expr('Color(H, Red)'))
+clauses.append(expr('Color(G, Brown)'))
+
+clauses.append(expr('TypeOf(A, Brick)'))
+clauses.append(expr('TypeOf(D, Brick)'))
+clauses.append(expr('TypeOf(C, Plate)'))
+clauses.append(expr('TypeOf(B, Tile)'))
+clauses.append(expr('TypeOf(F, Brick)'))
+clauses.append(expr('TypeOf(E, Tile)'))
+clauses.append(expr('TypeOf(J, Plate)'))
+clauses.append(expr('TypeOf(I, Brick)'))
+clauses.append(expr('TypeOf(H, Brick)'))
+clauses.append(expr('TypeOf(G, Tile)'))
+
+clauses.append(expr('OnPlate(x) ==> Base(x, x)'))
+clauses.append(expr('On(x, z) & Base(z, y) ==> Base(x, y)'))
+
+clauses.append(expr('Base(x, y) & AtLeft(y, z) ==> Base_at_right(x, z)'))
+
+clauses.append(expr('Base(x, y) & AtLeft(y, z) ==> Object_at_right(z, x)'))
+clauses.append(expr('Object_at_right(x, y) & On(z, x) ==> Object_at_right(z, y)'))
+
+def destructure(output):
+    answer = ''
+    for item in output:
+        answer += str(*item.values())
+    return answer
+
+KB = FolKB(clauses)
+
+print("Is piece B on top of piece C?")
+print(bool(fol_fc_ask(KB, expr('On(B, C)'))))
+
+print("\nWhat is the type and color of the piece on top of C?")
+top = destructure(fol_fc_ask(KB, expr('On(x, C)')))
+color = destructure(fol_fc_ask(KB, expr(f'Color({top}, x)')))
+type = destructure(fol_fc_ask(KB, expr(f'TypeOf({top}, x)')))
+print(f'{top} is a {color} {type}')
+
+print("\nWhat is the type of the base of H?")
+base = destructure(fol_fc_ask(KB, expr('Base(H, x)')))
+type = destructure(fol_fc_ask(KB, expr(f'TypeOf({base}, x)')))
+print(f'{base} is a {type}')
+
+print("\nWhat are the bricks that are right of C?")
+legos = destructure(fol_fc_ask(KB, expr('Object_at_right(x, C)')))
+bricks = ''
+for lego in legos:
+    type = destructure(fol_fc_ask(KB, expr(f'TypeOf({lego}, x)')))
+    if type == 'Brick':
+        bricks += lego
+print(f'{bricks} is/are bricks on the right of C')
+
+print("\nWhat are all the bricks that are on top of I?")
+top = ''
+start = destructure(fol_fc_ask(KB, expr('On(x, I)')))
+while True:
+    type = destructure(fol_fc_ask(KB, expr(f'TypeOf({start}, x)')))
+    if type == 'Brick':
+        top += start
+
+    start = destructure(fol_fc_ask(KB, expr(f'On(x, {start})')))
+    if not start:
+        break
+print(f'{top} is/are bricks on the top of I')
